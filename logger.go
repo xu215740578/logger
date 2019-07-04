@@ -53,7 +53,7 @@ func InitLogger(file string, level string, maxsize int, maxage int) *zap.Logger 
 	}
 
 	core := zapcore.NewCore(zapcore.NewJSONEncoder(encoderCfg), w, zap.NewAtomicLevelAt(loglevel))
-	logger := zap.New(core, zap.AddCaller())
+	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
 	errorLogger = logger.Sugar()
 	return logger
 }
