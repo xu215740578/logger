@@ -8,6 +8,7 @@ import (
 
 // error logger
 var errorLogger *zap.SugaredLogger
+var logger *zap.Logger
 
 var levelMap = map[string]zapcore.Level{
 	"debug":  zapcore.DebugLevel,
@@ -26,8 +27,8 @@ func getLoggerLevel(lvl string) zapcore.Level {
 	return zapcore.InfoLevel
 }
 
-//InitLogger set logger info and init logger
-func InitLogger(file string, level string, maxsize int, maxage int) *zap.Logger {
+//InitLogger 设置日志基本配置
+func InitLogger(file string, level string, maxsize int, maxage int) {
 	loglevel := getLoggerLevel(level)
 
 	w := zapcore.AddSync(&lumberjack.Logger{
@@ -39,12 +40,12 @@ func InitLogger(file string, level string, maxsize int, maxage int) *zap.Logger 
 
 	encoderCfg := zapcore.EncoderConfig{
 		// Keys can be anything except the empty string.
-		TimeKey:        "T",
-		LevelKey:       "L",
-		NameKey:        "N",
-		CallerKey:      "C",
-		MessageKey:     "M",
-		StacktraceKey:  "S",
+		TimeKey:        "Time",
+		LevelKey:       "Level",
+		NameKey:        "Name",
+		CallerKey:      "Caller",
+		MessageKey:     "Msg",
+		StacktraceKey:  "Stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.CapitalLevelEncoder,
 		EncodeTime:     zapcore.ISO8601TimeEncoder,
@@ -53,77 +54,112 @@ func InitLogger(file string, level string, maxsize int, maxage int) *zap.Logger 
 	}
 
 	core := zapcore.NewCore(zapcore.NewJSONEncoder(encoderCfg), w, zap.NewAtomicLevelAt(loglevel))
-	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
+	logger = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
 	errorLogger = logger.Sugar()
-	return logger
 }
 
-//Debugln log Debug level info
+// Sync calls the underlying Core's Sync method, flushing any buffered log
+// entries. Applications should take care to call Sync before exiting.
+func Sync() {
+	if logger != nil {
+		logger.Sync()
+	}
+}
+
+//Debugln 打印"Debug"级别日志信息
 func Debugln(args ...interface{}) {
-	errorLogger.Debug(args...)
+	if errorLogger != nil {
+		errorLogger.Debug(args...)
+	}
 }
 
-//Debugf log Debug level info
+//Debugf 打印"Debug"级别日志信息
 func Debugf(template string, args ...interface{}) {
-	errorLogger.Debugf(template, args...)
+	if errorLogger != nil {
+		errorLogger.Debugf(template, args...)
+	}
 }
 
-//Infoln log Info level info
+//Infoln 打印"Info"级别日志信息
 func Infoln(args ...interface{}) {
-	errorLogger.Info(args...)
+	if errorLogger != nil {
+		errorLogger.Info(args...)
+	}
 }
 
-//Infof log Info level info
+//Infof 打印"Info"级别日志信息
 func Infof(template string, args ...interface{}) {
-	errorLogger.Infof(template, args...)
+	if errorLogger != nil {
+		errorLogger.Infof(template, args...)
+	}
 }
 
-//Warnln log Warn level info
+//Warnln 打印"Warn"级别日志信息
 func Warnln(args ...interface{}) {
-	errorLogger.Warn(args...)
+	if errorLogger != nil {
+		errorLogger.Warn(args...)
+	}
 }
 
-//Warnf log Warn level info
+//Warnf 打印"Warn"级别日志信息
 func Warnf(template string, args ...interface{}) {
-	errorLogger.Warnf(template, args...)
+	if errorLogger != nil {
+		errorLogger.Warnf(template, args...)
+	}
 }
 
-//Errorln log Error level info
+//Errorln 打印"Error"级别日志信息
 func Errorln(args ...interface{}) {
-	errorLogger.Error(args...)
+	if errorLogger != nil {
+		errorLogger.Error(args...)
+	}
 }
 
-//Errorf log Error level info
+//Errorf 打印"Error"级别日志信息
 func Errorf(template string, args ...interface{}) {
-	errorLogger.Errorf(template, args...)
+	if errorLogger != nil {
+		errorLogger.Errorf(template, args...)
+	}
 }
 
-//DPanicln log Panic level info
+//DPanicln 打印"Panic"级别日志信息
 func DPanicln(args ...interface{}) {
-	errorLogger.DPanic(args...)
+	if errorLogger != nil {
+		errorLogger.DPanic(args...)
+	}
 }
 
-//DPanicf log Panic level info
+//DPanicf 打印"Panic"级别日志信息
 func DPanicf(template string, args ...interface{}) {
-	errorLogger.DPanicf(template, args...)
+	if errorLogger != nil {
+		errorLogger.DPanicf(template, args...)
+	}
 }
 
-//Panicln log Panic level info
+//Panicln 打印"Panic"级别日志信息
 func Panicln(args ...interface{}) {
-	errorLogger.Panic(args...)
+	if errorLogger != nil {
+		errorLogger.Panic(args...)
+	}
 }
 
-//Panicf log Panic level info
+//Panicf 打印"Panic"级别日志信息
 func Panicf(template string, args ...interface{}) {
-	errorLogger.Panicf(template, args...)
+	if errorLogger != nil {
+		errorLogger.Panicf(template, args...)
+	}
 }
 
-//Fatalln log Fatal level info
+//Fatalln 打印"Fatal"级别日志信息
 func Fatalln(args ...interface{}) {
-	errorLogger.Fatal(args...)
+	if errorLogger != nil {
+		errorLogger.Fatal(args...)
+	}
 }
 
-//Fatalf log Fatal level info
+//Fatalf 打印"Fatal"级别日志信息
 func Fatalf(template string, args ...interface{}) {
-	errorLogger.Fatalf(template, args...)
+	if errorLogger != nil {
+		errorLogger.Fatalf(template, args...)
+	}
 }
