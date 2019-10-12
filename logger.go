@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"github.com/xu215740578/zap"
-	"github.com/xu215740578/zap/zapcore"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
