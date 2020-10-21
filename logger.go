@@ -8,6 +8,28 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+var std = NewLogger()
+
+const (
+	DebugLevel  = "debug"
+	InfoLevel   = "info"
+	WarnLevel   = "warn"
+	ErrorLevel  = "error"
+	DPanicLevel = "dpanic"
+	PanicLevel  = "panic"
+	FatalLevel  = "fatal"
+)
+
+var levelMap = map[string]zapcore.Level{
+	DebugLevel:  zapcore.DebugLevel,
+	InfoLevel:   zapcore.InfoLevel,
+	WarnLevel:   zapcore.WarnLevel,
+	ErrorLevel:  zapcore.ErrorLevel,
+	DPanicLevel: zapcore.DPanicLevel,
+	PanicLevel:  zapcore.PanicLevel,
+	FatalLevel:  zapcore.FatalLevel,
+}
+
 type Logger struct {
 	logger *zap.Logger
 	out    io.Writer
@@ -49,18 +71,6 @@ func NewLogger(opts ...Option) *Logger {
 	logger.logger = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
 	logger.sugar = logger.logger.Sugar()
 	return logger
-}
-
-var std = NewLogger()
-
-var levelMap = map[string]zapcore.Level{
-	"debug":  zapcore.DebugLevel,
-	"info":   zapcore.InfoLevel,
-	"warn":   zapcore.WarnLevel,
-	"error":  zapcore.ErrorLevel,
-	"dpanic": zapcore.DPanicLevel,
-	"panic":  zapcore.PanicLevel,
-	"fatal":  zapcore.FatalLevel,
 }
 
 func getLoggerLevel(lvl string) zapcore.Level {
